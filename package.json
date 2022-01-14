@@ -1,5 +1,5 @@
 {
-  "name": "lighthouse-runner",
+  "name": "@jd/lighthouse-runner",
   "version": "1.0.0",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
@@ -7,6 +7,11 @@
   "module": "./build/esm/index.js",
   "types": "./build/index.d.ts",
   "license": "ISC",
+  "keywords": [
+    "lighthouse",
+    "performance",
+    "testing"
+  ],
   "engines": {
     "node": "> 14"
   },
