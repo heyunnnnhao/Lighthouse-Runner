@@ -12,6 +12,8 @@ export default class LighthouseRunner {
 
   private url: string;
 
+  private counter: number = 0;
+
   private chromeOptions() {
     return {
       port: random(1, 65535, false),
@@ -35,7 +37,8 @@ export default class LighthouseRunner {
       console.log('beyond my code', Date.now());
       rawResult = await lighthouse(this.url, { port: chrome.port }, config);
       console.log('mycode again', Date.now(), '\n');
-      console.log('--------iteration finished---------');
+      this.counter++;
+      console.log('--------finished iteration', this.counter, '---------');
     } catch (error) {
       throw Error('运行 lighthouse 失败 ' + error);
     }

@@ -15,7 +15,7 @@ export function makeJson(data: any, folderName: string, fileName: string) {
   }
 }
 
-const mockUrl = 'https://www.baidu.com/';
+const mockUrl = 'https://www.example.com/';
 
 const times = 3;
 

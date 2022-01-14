@@ -30,6 +30,7 @@
     "lint": "eslint src --ext .ts --fix",
     "lint:check": "eslint src --ext .ts",
     "test": "ava",
+    "lh":"ts-node test/lighthouse.ts",
     "test:coverage": "nyc ava && nyc report --reporter=html"
   },
   "devDependencies": {
