@@ -33,12 +33,12 @@ export default class LighthouseRunner {
     }
 
     try {
-      console.log('');
-      console.log('beyond my code', Date.now());
-      rawResult = await lighthouse(this.url, { port: chrome.port }, config);
-      console.log('mycode again', Date.now(), '\n');
       this.counter++;
-      console.log('--------finished iteration', this.counter, '---------');
+      console.log('--------', this.counter, 'iteration begin at', Date.now(), '---------');
+      console.log('\n\trunning at port', chrome.port, '\n');
+      rawResult = await lighthouse(this.url, { port: chrome.port }, config);
+      console.log('--------', this.counter, 'iteration finished', Date.now(), '---------');
+      console.log('\n\n\n');
     } catch (error) {
       throw Error('运行 lighthouse 失败 ' + error);
     }
@@ -76,6 +76,7 @@ export default class LighthouseRunner {
         throw Error('多次运行 lighthouse 失败 ' + error);
       })
       .finally(() => {
+        this.counter = 0;
         chromeLauncher.killAll();
       });
   }

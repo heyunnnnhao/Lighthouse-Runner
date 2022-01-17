@@ -13,7 +13,7 @@
     "testing"
   ],
   "engines": {
-    "node": "> 14"
+    "node": ">= 14"
   },
   "publishConfig": {
     "access": "public"
@@ -30,12 +30,11 @@
     "lint": "eslint src --ext .ts --fix",
     "lint:check": "eslint src --ext .ts",
     "test": "ava",
-    "lh":"ts-node test/lighthouse.ts",
+    "lh": "ts-node test/lighthouse.ts",
     "test:coverage": "nyc ava && nyc report --reporter=html"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.178",
-    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.9.1",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
