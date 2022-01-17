@@ -6,7 +6,7 @@ import format from './format';
 import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem } from './interfaces';
 
 export default class LighthouseRunner {
-  constructor(url: string) {
+  constructor(url: string = '') {
     this.url = url;
   }
 
@@ -82,10 +82,12 @@ export default class LighthouseRunner {
   }
 
   public test() {
-    console.log('successful');
+    console.log('success!!!');
   }
 
   public async run(times: number = 1): Promise<LighthouseResponse> {
+    if (!this.url) console.log('url 为空，试试运行test()');
+
     let result;
 
     if (times === 1) {
