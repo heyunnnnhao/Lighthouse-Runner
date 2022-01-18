@@ -87,21 +87,22 @@ export default class LighthouseRunner {
       });
   }
 
-  private test() {
-    console.log('success!!!');
+  private async test() {
+    console.log('success');
+    return await 'success';
   }
 
   private errorTest() {
     throw Error('错误抛出测试');
   }
 
-  public async run(times: number = 1): Promise<LighthouseResponse | null> {
+  public async run(times: number = 1): Promise<LighthouseResponse | null | string> {
     const mode = this.options.mode || 'normal';
 
     let result = null;
 
     if (mode === 'test') {
-      this.test();
+      result = await this.test();
     } else if (mode === 'errortest') {
       this.errorTest();
     } else {
