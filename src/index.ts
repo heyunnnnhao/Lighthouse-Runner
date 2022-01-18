@@ -34,10 +34,10 @@ export default class LighthouseRunner {
 
     try {
       this.counter++;
-      console.log('--------', this.counter, 'iteration begin at', Date.now(), '---------');
+      console.log('--------', this.url, this.counter, 'begin at', Date.now(), '---------');
       console.log('\n\trunning at port', chrome.port, '\n');
       rawResult = await lighthouse(this.url, { port: chrome.port }, config);
-      console.log('--------', this.counter, 'iteration finished', Date.now(), '---------');
+      console.log('--------', this.url, this.counter, 'finished', Date.now(), '---------');
       console.log('\n\n\n');
     } catch (error) {
       throw Error('运行 lighthouse 失败 ' + error);
@@ -83,6 +83,10 @@ export default class LighthouseRunner {
 
   public test() {
     console.log('success!!!');
+  }
+
+  public errorTest() {
+    throw Error('错误抛出测试');
   }
 
   public async run(times: number = 1): Promise<LighthouseResponse> {

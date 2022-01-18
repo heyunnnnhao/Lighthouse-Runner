@@ -1,19 +1,7 @@
 /* lighthouse 测试 */
-import * as fs from 'fs';
 import LighthouseRunner from '../src';
 import { LighthouseResponse } from '../src/interfaces';
-
-export function makeJson(data: any, folderName: string, fileName: string) {
-  try {
-    const resultJson = JSON.stringify(data);
-    if (!fs.existsSync(folderName)) {
-      fs.mkdirSync(folderName);
-    }
-    fs.writeFileSync(folderName + Date.now() + fileName, resultJson);
-  } catch (e) {
-    console.log('make Json failed');
-  }
-}
+import { makeJson } from '../src/utils';
 
 const mockUrl = 'https://www.example.com/';
 
@@ -32,3 +20,7 @@ new LighthouseRunner(mockUrl)
   .catch((error) => {
     return error;
   });
+
+// new LighthouseRunner().test()
+
+// new LighthouseRunner().errorTest();
