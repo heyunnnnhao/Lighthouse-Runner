@@ -89,14 +89,14 @@ export default class LighthouseRunner {
 
   private async test() {
     console.log('success');
-    return await 'success';
+    return await 200;
   }
 
   private errorTest() {
     throw Error('错误抛出测试');
   }
 
-  public async run(times: number = 1): Promise<LighthouseResponse | null | string> {
+  public async run(times: number = 1): Promise<LighthouseResponse | null | number> {
     const mode = this.options.mode || 'normal';
 
     let result = null;
@@ -116,3 +116,5 @@ export default class LighthouseRunner {
     return result;
   }
 }
+
+export * from './interfaces';

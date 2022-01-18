@@ -1,6 +1,5 @@
 /* lighthouse 测试 */
-import LighthouseRunner from '../src';
-import { LighthouseResponse, RunningOptions } from '../src/interfaces';
+import LighthouseRunner, { LighthouseResponse, RunningOptions } from '../src';
 import { makeJson } from '../src/utils';
 
 const mockUrl = 'https://www.example.com/';
@@ -8,7 +7,7 @@ const mockUrl = 'https://www.example.com/';
 const times = 3;
 
 const options: RunningOptions = {
-  mode: 'test',
+  mode: 'errortest',
   cheat: false,
 };
 
@@ -16,7 +15,9 @@ new LighthouseRunner(mockUrl, options)
   .run(times)
   .then((res: any) => {
     if (!res) return;
-    if (res === 'success') return res;
+
+    if (res === 200 || res === 0) return res;
+
     if (res.timesRun === res.successfulRun) {
       console.log(`All ${res.timesRun} run${res.timesRun === 1 ? '' : 's'} ha${res.timesRun === 1 ? 's' : 've'} passed with the score of ${res.score.value}`);
     } else {
@@ -24,6 +25,7 @@ new LighthouseRunner(mockUrl, options)
     }
 
     makeJson(res, '../results/', 'report.json');
+
     return res;
   })
   .catch((error) => {
