@@ -52,6 +52,10 @@ interface LighthouseResponse {
   msr: Array<LighthouseResponse.MSRItem>;
 }
 
+export interface RunningOptions {
+  mode?: 'test' | 'errortest' | 'normal';
+  cheat?: boolean;
+}
 export declare module PromiseAllSettledResponseItem {
   interface Fail {
     status: 'rejected';

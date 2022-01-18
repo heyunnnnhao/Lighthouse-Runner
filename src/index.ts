@@ -3,14 +3,20 @@ import * as chromeLauncher from 'chrome-launcher';
 import { random } from 'lodash';
 import config from './config-override';
 import format from './format';
-import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem } from './interfaces';
+import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem, RunningOptions } from './interfaces';
 
 export default class LighthouseRunner {
-  constructor(url: string = '') {
+  constructor(url: string = '', options: RunningOptions = {}) {
     this.url = url;
+    this.options = options;
   }
 
   private url: string;
+
+  private options: RunningOptions = {
+    mode: 'normal',
+    cheat: false,
+  };
 
   private counter: number = 0;
 
@@ -81,23 +87,29 @@ export default class LighthouseRunner {
       });
   }
 
-  public test() {
+  private test() {
     console.log('success!!!');
   }
 
-  public errorTest() {
+  private errorTest() {
     throw Error('错误抛出测试');
   }
 
-  public async run(times: number = 1): Promise<LighthouseResponse> {
-    if (!this.url) console.log('url 为空，试试运行test()');
+  public async run(times: number = 1): Promise<LighthouseResponse | null> {
+    const mode = this.options.mode || 'normal';
 
-    let result;
+    let result = null;
 
-    if (times === 1) {
-      result = await this.runLighthouse();
+    if (mode === 'test') {
+      this.test();
+    } else if (mode === 'errortest') {
+      this.errorTest();
     } else {
-      result = await this.runLighthouseMultiple(times);
+      if (times === 1) {
+        result = await this.runLighthouse();
+      } else {
+        result = await this.runLighthouseMultiple(times);
+      }
     }
 
     return result;

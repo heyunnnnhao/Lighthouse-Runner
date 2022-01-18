@@ -29,7 +29,11 @@ new LighthouseRunner(mockUrl)
 ```typescript
 import LighthouseRunner from '@jd/lighthouse-runner';
 
-new LighthouseRunner().test();
+const options = {
+  mode: 'test',
+};
+
+new LighthouseRunner(url, options).run();
 // 打印 'success!!!'
 ```
 
@@ -38,5 +42,15 @@ new LighthouseRunner().test();
 ```typescript
 import LighthouseRunner from '@jd/lighthouse-runner';
 
-new LighthouseRunner().errorTest();
+const options = {
+  mode: 'errortest',
+};
+
+new LighthouseRunner(url, options).run();
+```
+Options:
+```typescript
+interface RunningOptions {
+  mode?: 'test' | 'errortest' | 'normal';
+}
 ```
