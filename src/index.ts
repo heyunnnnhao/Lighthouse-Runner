@@ -116,5 +116,3 @@ export default class LighthouseRunner {
     return result;
   }
 }
-
-export * from './interfaces';
