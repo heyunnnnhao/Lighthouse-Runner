@@ -1,7 +1,7 @@
-import constants from "./constants/constants";
-import UIStrings from "./constants/UIStrings";
-import audits from "./configs/audits";
-import auditRefs from "./configs/auditRefs";
+import constants from "../constants/constants";
+import UIStrings from "../constants/UIStrings";
+import audits from "./audits";
+import auditRefs from "./auditRefs";
 
 const defaultConfig = {
   settings: constants.defaultSettings,

@@ -5,7 +5,7 @@
     "target": "es2020",
     "rootDir": "./src",
     "outDir": "build",
-    "strict": true,
+    "strict": false,
     "sourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "./src/**/*.js", "src/runner.ts"],
   "exclude": ["./test/**/*.ts"]
 }

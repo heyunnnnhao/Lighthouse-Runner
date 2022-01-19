@@ -1,8 +1,6 @@
 import gatherers from '../configs/gatherers';
 import { LighthouseConfigSettings } from '../interfaces';
 
-const curveRatio = 1;
-
 const DEVTOOLS_RTT_ADJUSTMENT_FACTOR = 3.75;
 const DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR = 0.9;
 
@@ -142,7 +140,6 @@ const nonSimulatedPassConfigOverrides = {
 };
 
 export default {
-  curveRatio,
   throttling,
   screenEmulationMetrics,
   userAgents,

@@ -38,11 +38,11 @@ declare module LighthouseResponse {
 
 interface LighthouseResponse {
   score: LighthouseResponse.Score;
+  description: string | null;
   lighthouseVersion: '9.2.0';
   requestURL: string;
   finalUrl: string;
   fetchTime: string;
-  usedTime: number | null;
   userAgent: string;
   environment: any;
   throttling: ThrottlingSettings;
@@ -53,8 +53,8 @@ interface LighthouseResponse {
 }
 
 export interface RunningOptions {
-  mode?: 'test' | 'errortest' | 'normal';
-  cheat?: boolean;
+  mode?: 'sync' | 'async' | 'god' | '';
+  curve?: number;
 }
 export declare module PromiseAllSettledResponseItem {
   interface Fail {

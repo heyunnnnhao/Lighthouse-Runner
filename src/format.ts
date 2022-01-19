@@ -1,64 +1,6 @@
 import { get, mergeWith, isNumber } from 'lodash';
-import constants from './constants/constants';
 import { LighthouseResponse, LighthouseRaw } from './interfaces';
 import { getStandardDeviation, getAverage } from './utils';
-
-// 整理，重组lighthouse返回的原始数据
-function formatLighthouseResponse(rawData: LighthouseRaw): LighthouseResponse {
-  const lhr: any = get(rawData, 'lhr', {});
-
-  const auditRefs: any = get(lhr, 'categories.performance.auditRefs');
-
-  let msr: any = lhr.audits; // msr 为 "MenShen result"
-
-  // 为 检查项目 列表添加权重和group名
-  auditRefs.forEach((i: any) => {
-    msr[i.id].weight = i.weight;
-    msr[i.id].group = i.group;
-  });
-
-  // 过滤无权重（0也算有权重）的检查项目
-  msr = Object.values(msr).filter((i: any) => i.weight != undefined);
-
-  const score = getScore(msr);
-  // Lighthouse 返回的总结果在此定义
-  const result: LighthouseResponse = {
-    score: {
-      value: score,
-      valueBeforeOmit: score,
-      standardDeviation: 0,
-      standardDeviationBeforeOmit: 0,
-      allScore: null,
-      omittedRuns: 0,
-    },
-    // Lighthouse 版本
-    lighthouseVersion: lhr.lighthouseVersion,
-    // 跑分次数
-    timesRun: 1,
-    // 跑分成功次数
-    successfulRun: 1,
-    // 请求url
-    requestURL: lhr.requestedUrl,
-    // 重定向后url
-    finalUrl: lhr.finalUrl,
-    // 请求时间
-    fetchTime: lhr.fetchTime,
-    // 跑分耗时（ms）
-    usedTime: null,
-    // UA
-    userAgent: lhr.userAgent,
-    // 环境参数
-    environment: lhr.environment,
-    // 性能，网络节流参数
-    throttling: lhr.configSettings.throttling,
-    // 手机环境模拟参数
-    emulation: lhr.configSettings.screenEmulation,
-    // 各检查项目结果
-    msr,
-  };
-
-  return result;
-}
 
 // 计算得分
 function getScore(list: Array<any>): number {
@@ -74,7 +16,7 @@ function getScore(list: Array<any>): number {
 
   let fakeScore = realScore;
 
-  if (constants.curveRatio) fakeScore *= constants.curveRatio;
+  // if (curveRatio) fakeScore *= curveRatio;
 
   if (fakeScore > 100) return 100;
 
@@ -101,7 +43,7 @@ function adjustResponse(validList: Array<LighthouseResponse>, omitCount: number)
 }
 
 // 多次跑分后合并结果
-function mergeResponses(validList: Array<LighthouseResponse>, times: number): LighthouseResponse {
+export function mergeResponses(validList: Array<LighthouseResponse>, times: number): LighthouseResponse {
   let result: any = {};
 
   const omitCount = getOmitCount(validList.length);
@@ -133,8 +75,9 @@ function mergeResponses(validList: Array<LighthouseResponse>, times: number): Li
   } else if (adjustedValidList.length === 1) {
     result = adjustedValidList[0];
   }
-  // 调整跑分用时为所有跑分总用时
-  result.usedTime *= validList.length;
+
+  // 修正时区
+  result.fetchTime = new Date(result.fetchTime);
   // 跑分次数
   result.timesRun = times;
   // 跑分成功次数
@@ -154,13 +97,65 @@ function mergeResponses(validList: Array<LighthouseResponse>, times: number): Li
     // 忽略掉的跑分次数
     omittedRun: omitCount,
   };
-
+  // 描述性文字
+  result.description = `${validList.length} / ${times} runs ha${validList.length === 1 ? 's' : 've'} passed with the score of ${result.score.value}`;
+  
   return result;
 }
 
-// 数据处理入口函数
-export default function format(rawData: any, times: number = 1): LighthouseResponse {
-  const result = times === 1 ? formatLighthouseResponse(rawData) : mergeResponses(rawData, times);
+// 整理，重组lighthouse返回的原始数据
+export function formatLighthouseResponse(rawData: LighthouseRaw): LighthouseResponse {
+  const lhr: any = get(rawData, 'lhr', {});
+
+  const auditRefs: any = get(lhr, 'categories.performance.auditRefs');
+
+  let msr: any = lhr.audits; // msr 为 "MenShen result"
+
+  // 为 检查项目 列表添加权重和group名
+  auditRefs.forEach((i: any) => {
+    msr[i.id].weight = i.weight;
+    msr[i.id].group = i.group;
+  });
+
+  // 过滤无权重（0也算有权重）的检查项目
+  msr = Object.values(msr).filter((i: any) => i.weight != undefined);
+
+  const score = getScore(msr);
+  // Lighthouse 返回的总结果在此定义
+  const result: LighthouseResponse = {
+    score: {
+      value: score,
+      valueBeforeOmit: score,
+      standardDeviation: 0,
+      standardDeviationBeforeOmit: 0,
+      allScore: null,
+      omittedRuns: 0,
+    },
+    //描述性文字
+    description: null,
+    // 跑分次数
+    timesRun: 1,
+    // 跑分成功次数
+    successfulRun: 1,
+    // Lighthouse 版本
+    lighthouseVersion: lhr.lighthouseVersion,
+    // 请求url
+    requestURL: lhr.requestedUrl,
+    // 重定向后url
+    finalUrl: lhr.finalUrl,
+    // 请求时间
+    fetchTime: lhr.fetchTime,
+    // UA
+    userAgent: lhr.userAgent,
+    // 环境参数
+    environment: lhr.environment,
+    // 性能，网络节流参数
+    throttling: lhr.configSettings.throttling,
+    // 手机环境模拟参数
+    emulation: lhr.configSettings.screenEmulation,
+    // 各检查项目结果
+    msr,
+  };
 
   return result;
 }

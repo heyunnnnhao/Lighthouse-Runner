@@ -1,118 +1,74 @@
-const lighthouse = require('lighthouse');
 import * as chromeLauncher from 'chrome-launcher';
-import { random } from 'lodash';
-import config from './config-override';
-import format from './format';
+import runLH from './runner';
+import { mergeResponses } from './format';
 import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem, RunningOptions } from './interfaces';
+import { fork } from 'child_process';
 
 export default class LighthouseRunner {
-  constructor(url: string = '', options: RunningOptions = {}) {
+  constructor(url: string = '') {
     this.url = url;
-    this.options = options;
   }
 
   private url: string;
 
-  private options: RunningOptions = {
-    mode: 'normal',
-    cheat: false,
-  };
-
-  private counter: number = 0;
-
-  private chromeOptions() {
-    return {
-      port: random(1, 65535, false),
-      chromeFlags: ['--headless', '--disable-gpu', '--enable-automation', '--disable-device-discovery-notifications', '--disable-sync'],
-    };
-  }
-
-  private async runLighthouse(): Promise<LighthouseResponse> {
-    const startTime = Date.now();
-
-    let result, chrome, rawResult: LighthouseRaw;
-
-    try {
-      chrome = await chromeLauncher.launch(this.chromeOptions());
-    } catch (error) {
-      throw Error('启动 chrome 失败 ' + error);
-    }
-
-    try {
-      this.counter++;
-      console.log('--------', this.url, this.counter, 'begin at', Date.now(), '---------');
-      console.log('\n\trunning at port', chrome.port, '\n');
-      rawResult = await lighthouse(this.url, { port: chrome.port }, config);
-      console.log('--------', this.url, this.counter, 'finished', Date.now(), '---------');
-      console.log('\n\n\n');
-    } catch (error) {
-      throw Error('运行 lighthouse 失败 ' + error);
-    }
-
-    try {
-      await chrome.kill();
-    } catch (error) {
-      throw Error('关闭 chrome 失败 ' + error);
-    }
-
-    result = format(rawResult, 1);
-    // 添加跑分用时
-    result.usedTime = Date.now() - startTime;
-
-    return result;
-  }
-
-  private async runLighthouseMultiple(times: number): Promise<LighthouseResponse> {
-    let promises = [];
-
-    for (let i = 0; i < times; i++) {
-      promises.push(await this.runLighthouse());
-    }
-
-    return Promise.allSettled(promises)
-      .then((res: Array<PromiseAllSettledResponseItem>) => {
-        // 跑分成功的列表，过滤掉失败的
-        const validList = res.filter((i) => i.status === 'fulfilled').map((i: any) => i.value);
-
-        if (validList.length < 1) throw Error('有效跑分次数不足！ ');
-
-        return format(validList, times);
+  private async generateChildProcess(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const forked = fork('src/child');
+      forked.send(this.url);
+      forked.on('message', async (res: any) => {
+        resolve(res);
+      });
+    })
+      .then((res: any) => {
+        return res;
       })
       .catch((error) => {
+        throw Error('接受子进程数据失败' + error);
+      });
+  }
+
+  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
+    console.log('文档：http://npm.m.jd.com/package/@jd/lighthouse-runner');
+    console.log(`\n开始测试 ${this.url}`);
+
+    let arr = [];
+
+    for (let i = 0; i < times; i++) {
+      arr.push(isAsync ? this.generateChildProcess() : await runLH(this.url));
+    }
+
+    return Promise.allSettled(arr)
+      .then((res: any) => {
+        const values = res.filter((i: any) => i.status === 'fulfilled').map((i: any) => i.value);
+
+        return mergeResponses(values, times);
+      })
+      .catch((error) => {
+        console.log(error);
         throw Error('多次运行 lighthouse 失败 ' + error);
       })
       .finally(() => {
-        this.counter = 0;
+        console.log(`结束测试 ${this.url}\n`);
         chromeLauncher.killAll();
       });
   }
 
-  private async test() {
+  public async test() {
     console.log('success');
-    return await 200;
   }
 
-  private errorTest() {
+  public errorTest() {
     throw Error('错误抛出测试');
   }
 
-  public async run(times: number = 1): Promise<LighthouseResponse | null | number> {
-    const mode = this.options.mode || 'normal';
+  // 入口函数 处理配置options
+  public async run(times: number = 1, options: RunningOptions = {}): Promise<LighthouseResponse | null> {
+    const isGodMode = options.mode === 'god';
 
-    let result = null;
+    const isAsync = options.mode === 'async';
 
-    if (mode === 'test') {
-      result = await this.test();
-    } else if (mode === 'errortest') {
-      this.errorTest();
-    } else {
-      if (times === 1) {
-        result = await this.runLighthouse();
-      } else {
-        result = await this.runLighthouseMultiple(times);
-      }
-    }
+    const curveRatio = options.curve;
 
-    return result;
+    return await this.runLighthouse(times, { isAsync, isGodMode, curveRatio });
   }
 }

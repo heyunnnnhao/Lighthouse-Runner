@@ -13,44 +13,24 @@ const mockUrl = 'https://www.example.com/'; // 跑分url
 
 const times = 3; // 跑分次数
 
+const options = {
+  mode: 'sync' | 'async',
+};
+
+// 使用
 new LighthouseRunner(mockUrl)
-  .run(times)
+  .run(times, options)
   .then((res) => {
-    console.log('最终得分为', res.score.value);
+    console.log(res.description); // 打印测试结果概览
     return res;
   })
   .catch((error) => {
     console.log(error);
   });
-```
 
-测试:
+// 测试
+new LighthouseRunner().test(); // 打印 'success!!!'
 
-```typescript
-import LighthouseRunner from '@jd/lighthouse-runner';
-
-const options = {
-  mode: 'test',
-};
-
-new LighthouseRunner(url, options).run();
-// 打印 'success!!!'
-```
-
-错误抛出测试
-
-```typescript
-import LighthouseRunner from '@jd/lighthouse-runner';
-
-const options = {
-  mode: 'errortest',
-};
-
-new LighthouseRunner(url, options).run();
-```
-Options:
-```typescript
-interface RunningOptions {
-  mode?: 'test' | 'errortest' | 'normal';
-}
+// 错误抛出测试
+new LighthouseRunner().errortest(); // 抛出 '错误抛出测试' 错误
 ```
