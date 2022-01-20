@@ -13,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true
   },
-  "include": ["./src/**/*.ts", "./src/**/*.js", "src/runner.ts"],
+  "include": ["./src/**/*.ts", "./src/**/*.js"],
   "exclude": ["./test/**/*.ts"]
 }

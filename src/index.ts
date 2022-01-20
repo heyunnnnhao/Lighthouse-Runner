@@ -1,9 +1,8 @@
 import * as chromeLauncher from 'chrome-launcher';
-import runLH from './runner';
+import { runLH } from './runner';
 import { mergeResponses } from './format';
 import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem, RunningOptions } from './interfaces';
 import { fork } from 'child_process';
-
 export default class LighthouseRunner {
   constructor(url: string = '') {
     this.url = url;
@@ -13,7 +12,7 @@ export default class LighthouseRunner {
 
   private async generateChildProcess(): Promise<any> {
     return new Promise((resolve, reject) => {
-      const forked = fork('src/child');
+      const forked = fork('./node_modules/@jd/lighthouse-runner/src/child');
       forked.send(this.url);
       forked.on('message', async (res: any) => {
         resolve(res);
@@ -39,16 +38,28 @@ export default class LighthouseRunner {
 
     return Promise.allSettled(arr)
       .then((res: any) => {
-        const values = res.filter((i: any) => i.status === 'fulfilled').map((i: any) => i.value);
+        const validList = res.filter((i: any) => i.status === 'fulfilled');
 
-        return mergeResponses(values, times);
+        const reasonList = res.map((i: any) => i.reason && i.reason);
+
+        if (validList.length < 1) throw Error('跑分成功次数不足');
+
+        const values = validList.map((i: any) => i.value);
+
+        let result = mergeResponses(values, times);
+
+        result.warnings = reasonList;
+
+        return result;
       })
       .catch((error) => {
         console.log(error);
+
         throw Error('多次运行 lighthouse 失败 ' + error);
       })
       .finally(() => {
         console.log(`结束测试 ${this.url}\n`);
+
         chromeLauncher.killAll();
       });
   }

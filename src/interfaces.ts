@@ -39,6 +39,7 @@ declare module LighthouseResponse {
 interface LighthouseResponse {
   score: LighthouseResponse.Score;
   description: string | null;
+  warnings: Array<string | null>;
   lighthouseVersion: '9.2.0';
   requestURL: string;
   finalUrl: string;

@@ -99,7 +99,7 @@ export function mergeResponses(validList: Array<LighthouseResponse>, times: numb
   };
   // 描述性文字
   result.description = `${validList.length} / ${times} runs ha${validList.length === 1 ? 's' : 've'} passed with the score of ${result.score.value}`;
-  
+
   return result;
 }
 
@@ -133,6 +133,8 @@ export function formatLighthouseResponse(rawData: LighthouseRaw): LighthouseResp
     },
     //描述性文字
     description: null,
+    // 错误信息
+    warnings: [],
     // 跑分次数
     timesRun: 1,
     // 跑分成功次数

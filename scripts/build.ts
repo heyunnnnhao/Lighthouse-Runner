@@ -3,7 +3,7 @@ import { build } from 'esbuild';
 
 const baseConfig = {
   platform: 'node' as const,
-  target: 'esnext' as const,
+  target: 'node12' as const,
   bundle: true,
   minify: true,
   nodePaths: [path.join(__dirname, '../src')],

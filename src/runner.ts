@@ -9,7 +9,7 @@ function chromeOptions() {
   };
 }
 
-export default async function runLH(url) {
+export async function runLH(url) {
   let chrome, rawResult;
 
   try {
