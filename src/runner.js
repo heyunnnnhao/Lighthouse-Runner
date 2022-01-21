@@ -1,7 +1,7 @@
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
-import config from './configs/config-override';
-import { formatLighthouseResponse } from './format';
+const config = require('./configs/config-override');
+const { formatLighthouseResponse } = require('./format');
 
 function chromeOptions() {
   return {
@@ -9,7 +9,7 @@ function chromeOptions() {
   };
 }
 
-export default async function runLH(url) {
+module.exports = async function runLH(url) {
   let chrome, rawResult;
 
   try {
@@ -32,4 +32,4 @@ export default async function runLH(url) {
   }
 
   return formatLighthouseResponse(rawResult);
-}
+};

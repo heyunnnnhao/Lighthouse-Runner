@@ -1,9 +1,8 @@
-import { get, mergeWith, isNumber } from 'lodash';
-import { LighthouseResponse, LighthouseRaw } from './interfaces';
-import { getStandardDeviation, getAverage } from './utils';
+const { get, mergeWith, isNumber } = require('lodash');
+const { getStandardDeviation, getAverage, formatTime } = require('./utils');
 
 // 计算得分
-function getScore(list: Array<any>): number {
+function getScore(list) {
   let temp = 0;
 
   list.forEach((i) => {
@@ -26,7 +25,7 @@ function getScore(list: Array<any>): number {
 }
 
 // 动态忽略个数
-function getOmitCount(length: number): number {
+function getOmitCount(length) {
   // 过滤promise失败后的列表若只剩一项，不忽略
   if (length === 1) return 0;
   // 8不是必须，目的是跑分8次以上的话忽略最低的两次
@@ -34,7 +33,7 @@ function getOmitCount(length: number): number {
 }
 
 // 多次跑分中忽略最低的x次
-function adjustResponse(validList: Array<LighthouseResponse>, omitCount: number): Array<LighthouseResponse> {
+function adjustResponse(validList, omitCount) {
   return validList
     .sort((a, b) => {
       return a.score.value - b.score.value;
@@ -43,8 +42,8 @@ function adjustResponse(validList: Array<LighthouseResponse>, omitCount: number)
 }
 
 // 多次跑分后合并结果
-export function mergeResponses(validList: Array<LighthouseResponse>, times: number): LighthouseResponse {
-  let result: any = {};
+function mergeResponses(validList, times) {
+  let result = {};
 
   const omitCount = getOmitCount(validList.length);
 
@@ -56,7 +55,7 @@ export function mergeResponses(validList: Array<LighthouseResponse>, times: numb
   // 如果忽略最低次后有效跑分只剩一次，则直接取用之
   if (adjustedValidList.length > 1) {
     // 自定义合并函数用于 lodash.mergeWith
-    const merger = (value1: any, value2: any): number | undefined => {
+    const merger = (value1, value2) => {
       if (isNumber(value1)) {
         // 个别检查项目结果为二进制，若欲合并的两次结果不同，则使用 OR 门
         if ((value1 === 1 || value1 === 0) && value1 + value2 === 1) return 1;
@@ -77,7 +76,7 @@ export function mergeResponses(validList: Array<LighthouseResponse>, times: numb
   }
 
   // 修正时区
-  result.fetchTime = new Date(result.fetchTime);
+  result.fetchTime = formatTime(result.fetchTime);
   // 跑分次数
   result.timesRun = times;
   // 跑分成功次数
@@ -104,25 +103,25 @@ export function mergeResponses(validList: Array<LighthouseResponse>, times: numb
 }
 
 // 整理，重组lighthouse返回的原始数据
-export function formatLighthouseResponse(rawData: LighthouseRaw): LighthouseResponse {
-  const lhr: any = get(rawData, 'lhr', {});
+function formatLighthouseResponse(rawData) {
+  const lhr = get(rawData, 'lhr', {});
 
-  const auditRefs: any = get(lhr, 'categories.performance.auditRefs');
+  const auditRefs = get(lhr, 'categories.performance.auditRefs');
 
-  let msr: any = lhr.audits; // msr 为 "MenShen result"
+  let msr = lhr.audits; // msr 为 "MenShen result"
 
   // 为 检查项目 列表添加权重和group名
-  auditRefs.forEach((i: any) => {
+  auditRefs.forEach((i) => {
     msr[i.id].weight = i.weight;
     msr[i.id].group = i.group;
   });
 
   // 过滤无权重（0也算有权重）的检查项目
-  msr = Object.values(msr).filter((i: any) => i.weight != undefined);
+  msr = Object.values(msr).filter((i) => i.weight != undefined);
 
   const score = getScore(msr);
   // Lighthouse 返回的总结果在此定义
-  const result: LighthouseResponse = {
+  const result = {
     score: {
       value: score,
       valueBeforeOmit: score,
@@ -161,3 +160,5 @@ export function formatLighthouseResponse(rawData: LighthouseRaw): LighthouseResp
 
   return result;
 }
+
+module.exports = { formatLighthouseResponse, mergeResponses };

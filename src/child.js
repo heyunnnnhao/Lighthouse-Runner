@@ -1,4 +1,4 @@
-import runLH from './runner';
+const runLH = require('./runner');
 
 process.on('message', async (url) => {
   const result = await runLH(url);

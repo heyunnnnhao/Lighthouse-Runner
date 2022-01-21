@@ -7,7 +7,7 @@
 使用：
 
 ```typescript
-import LighthouseRunner from '@jd/lighthouse-runner';
+const LighthouseRunner = require('../dist/out.js');
 
 const mockUrl = 'https://www.example.com/'; // 跑分url
 

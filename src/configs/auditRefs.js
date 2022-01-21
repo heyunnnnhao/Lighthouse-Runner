@@ -1,15 +1,49 @@
-import m2a from './metrics-to-audits';
-
-const weightedAudits: any = [
-  { id: 'first-contentful-paint', weight: 10, group: 'metrics', acronym: 'FCP', relevantAudits: m2a.fcpRelevantAudits },
-  { id: 'interactive', weight: 10, group: 'metrics', acronym: 'TTI' },
-  { id: 'speed-index', weight: 10, group: 'metrics', acronym: 'SI' },
-  { id: 'total-blocking-time', weight: 30, group: 'metrics', acronym: 'TBT', relevantAudits: m2a.tbtRelevantAudits },
-  { id: 'largest-contentful-paint', weight: 25, group: 'metrics', acronym: 'LCP', relevantAudits: m2a.lcpRelevantAudits },
-  { id: 'cumulative-layout-shift', weight: 15, group: 'metrics', acronym: 'CLS', relevantAudits: m2a.clsRelevantAudits },
+// go/lh-audit-metric-mapping
+const fcpRelevantAudits = [
+  'server-response-time',
+  'render-blocking-resources',
+  'redirects',
+  'critical-request-chains',
+  'uses-text-compression',
+  'uses-rel-preconnect',
+  'uses-rel-preload',
+  'font-display',
+  'unminified-javascript',
+  'unminified-css',
+  'unused-css-rules',
 ];
 
-const unweightedAudits: any = [
+const lcpRelevantAudits = [...fcpRelevantAudits, 'largest-contentful-paint-element', 'preload-lcp-image', 'unused-javascript', 'efficient-animated-content', 'total-byte-weight'];
+
+const tbtRelevantAudits = [
+  'long-tasks',
+  'third-party-summary',
+  'third-party-facades',
+  'bootup-time',
+  'mainthread-work-breakdown',
+  'dom-size',
+  'duplicated-javascript',
+  'legacy-javascript',
+  'viewport',
+];
+
+const clsRelevantAudits = [
+  'layout-shift-elements',
+  'non-composited-animations',
+  'unsized-images',
+  'preload-fonts', // actually in BP, rather than perf
+];
+
+const weightedAudits = [
+  { id: 'first-contentful-paint', weight: 10, group: 'metrics', acronym: 'FCP', relevantAudits: fcpRelevantAudits },
+  { id: 'interactive', weight: 10, group: 'metrics', acronym: 'TTI' },
+  { id: 'speed-index', weight: 10, group: 'metrics', acronym: 'SI' },
+  { id: 'total-blocking-time', weight: 30, group: 'metrics', acronym: 'TBT', relevantAudits: tbtRelevantAudits },
+  { id: 'largest-contentful-paint', weight: 25, group: 'metrics', acronym: 'LCP', relevantAudits: lcpRelevantAudits },
+  { id: 'cumulative-layout-shift', weight: 15, group: 'metrics', acronym: 'CLS', relevantAudits: clsRelevantAudits },
+];
+
+const unweightedAudits = [
   { id: 'max-potential-fid', weight: 0, group: 'diagnostics' },
   { id: 'first-meaningful-paint', weight: 0, acronym: 'FMP', group: 'diagnostics' },
   { id: 'render-blocking-resources', weight: 0, group: 'diagnostics' },
@@ -61,8 +95,8 @@ const unweightedAudits: any = [
 
 const auditRefs = weightedAudits.concat(unweightedAudits);
 
-function weightCheck(auditsList: Array<any>) {
-  const weightSum = auditsList.reduce((a: any, b: any) => {
+function weightCheck(auditsList) {
+  const weightSum = auditsList.reduce((a, b) => {
     return a + b.weight;
   }, 0);
 
@@ -71,4 +105,4 @@ function weightCheck(auditsList: Array<any>) {
 
 if (!weightCheck(auditRefs)) throw Error('总权重必须是 100!!!');
 
-export default auditRefs;
+module.exports = auditRefs;

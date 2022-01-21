@@ -1,23 +1,21 @@
-import runLH from './runner';
-import { mergeResponses } from './format';
-import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem, RunningOptions } from './interfaces';
-import { fork } from 'child_process';
-export default class LighthouseRunner {
-  constructor(url: string = '') {
+const runLH = require('./runner');
+const { mergeResponses } = require('./format');
+const { fork } = require('child_process');
+
+class LighthouseRunner {
+  constructor(url = '') {
     this.url = url;
   }
 
-  private url: string;
-
-  private async generateChildProcess(): Promise<LighthouseRaw> {
+  async generateChildProcess() {
     return new Promise((resolve, reject) => {
       const forked = fork('./node_modules/@jd/lighthouse-runner/src/child');
       forked.send(this.url);
-      forked.on('message', async (res: any) => {
+      forked.on('message', async (res) => {
         resolve(res);
       });
     })
-      .then((res: any) => {
+      .then((res) => {
         return res;
       })
       .catch((error) => {
@@ -26,9 +24,8 @@ export default class LighthouseRunner {
       .finally(() => {});
   }
 
-  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }): Promise<LighthouseResponse> {
-    console.log('文档：http://npm.m.jd.com/package/@jd/lighthouse-runner');
-    console.log(`\n开始测试 ${this.url}`);
+  async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
+    console.log(`开始测试 ${this.url}`);
 
     let arr = [];
 
@@ -37,16 +34,16 @@ export default class LighthouseRunner {
     }
 
     return Promise.allSettled(arr)
-      .then((res: any) => {
-        const validList = res.filter((i: any) => i.status === 'fulfilled');
+      .then((res) => {
+        const validList = res.filter((i) => i.status === 'fulfilled');
 
         if (validList.length < 1) throw Error('跑分成功次数不足');
 
-        const values = validList.map((i: any) => i.value);
+        const values = validList.map((i) => i.value);
 
         let result = mergeResponses(values, times);
 
-        result.warnings = res.map((i: any) => i.reason && i.reason);
+        result.warnings = res.map((i) => i.reason && i.reason);
 
         return result;
       })
@@ -56,20 +53,20 @@ export default class LighthouseRunner {
         throw Error('多次运行 lighthouse 失败 ' + error);
       })
       .finally(() => {
-        console.log(`结束测试 ${this.url}\n`);
+        console.log(`结束测试 ${this.url}`);
       });
   }
 
-  public async test() {
+  async test() {
     console.log('success');
   }
 
-  public errorTest() {
+  errorTest() {
     throw Error('错误抛出测试');
   }
 
   // 入口函数 处理配置options
-  public async run(times: number = 1, options: RunningOptions = {}): Promise<LighthouseResponse | null> {
+  async run(times = 1, options = {}) {
     const isGodMode = options?.mode === 'god';
 
     const isAsync = options?.mode === 'async';
@@ -79,3 +76,5 @@ export default class LighthouseRunner {
     return await this.runLighthouse(times, { isAsync, isGodMode, curveRatio });
   }
 }
+
+module.exports = LighthouseRunner;
