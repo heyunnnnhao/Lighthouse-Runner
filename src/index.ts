@@ -1,5 +1,4 @@
-import * as chromeLauncher from 'chrome-launcher';
-import { runLH } from './runner';
+import runLH from './runner';
 import { mergeResponses } from './format';
 import { LighthouseResponse, LighthouseRaw, PromiseAllSettledResponseItem, RunningOptions } from './interfaces';
 import { fork } from 'child_process';
@@ -10,7 +9,7 @@ export default class LighthouseRunner {
 
   private url: string;
 
-  private async generateChildProcess(): Promise<any> {
+  private async generateChildProcess(): Promise<LighthouseRaw> {
     return new Promise((resolve, reject) => {
       const forked = fork('./node_modules/@jd/lighthouse-runner/src/child');
       forked.send(this.url);
@@ -23,10 +22,11 @@ export default class LighthouseRunner {
       })
       .catch((error) => {
         throw Error('接受子进程数据失败' + error);
-      });
+      })
+      .finally(() => {});
   }
 
-  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
+  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }): Promise<LighthouseResponse> {
     console.log('文档：http://npm.m.jd.com/package/@jd/lighthouse-runner');
     console.log(`\n开始测试 ${this.url}`);
 
@@ -40,15 +40,13 @@ export default class LighthouseRunner {
       .then((res: any) => {
         const validList = res.filter((i: any) => i.status === 'fulfilled');
 
-        const reasonList = res.map((i: any) => i.reason && i.reason);
-
         if (validList.length < 1) throw Error('跑分成功次数不足');
 
         const values = validList.map((i: any) => i.value);
 
         let result = mergeResponses(values, times);
 
-        result.warnings = reasonList;
+        result.warnings = res.map((i: any) => i.reason && i.reason);
 
         return result;
       })
@@ -59,8 +57,6 @@ export default class LighthouseRunner {
       })
       .finally(() => {
         console.log(`结束测试 ${this.url}\n`);
-
-        chromeLauncher.killAll();
       });
   }
 
@@ -74,11 +70,11 @@ export default class LighthouseRunner {
 
   // 入口函数 处理配置options
   public async run(times: number = 1, options: RunningOptions = {}): Promise<LighthouseResponse | null> {
-    const isGodMode = options.mode === 'god';
+    const isGodMode = options?.mode === 'god';
 
-    const isAsync = options.mode === 'async';
+    const isAsync = options?.mode === 'async';
 
-    const curveRatio = options.curve;
+    const curveRatio = options?.curve;
 
     return await this.runLighthouse(times, { isAsync, isGodMode, curveRatio });
   }

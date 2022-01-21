@@ -8,7 +8,7 @@ const mockUrl = 'https://www.example.com/';
 const times = 3;
 
 const options: RunningOptions = {
-  mode: 'sync',
+  mode: 'async',
 };
 
 new LighthouseRunner(mockUrl)
