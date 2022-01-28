@@ -1,7 +1,9 @@
 const runLH = require('./runner');
 const { mergeResponses } = require('./format');
 const { fork } = require('child_process');
+const process = require('process');
 
+const childPath = process.env?.NODE_ENV === 'development' ? 'src/child' : './node_modules/@jd/lighthouse-runner/src/child';
 class LighthouseRunner {
   constructor(url = '') {
     this.url = url;
@@ -9,7 +11,7 @@ class LighthouseRunner {
 
   async generateChildProcess() {
     return new Promise((resolve, reject) => {
-      const forked = fork('./node_modules/@jd/lighthouse-runner/src/child');
+      const forked = fork(childPath);
       forked.send(this.url);
       forked.on('message', async (res) => {
         resolve(res);

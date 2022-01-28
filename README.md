@@ -7,14 +7,14 @@
 使用：
 
 ```typescript
-const LighthouseRunner = require('../dist/out.js');
+const LighthouseRunner = require("@jd/lighthouse-runner");
 
 const mockUrl = 'https://www.example.com/'; // 跑分url
 
 const times = 3; // 跑分次数
 
 const options = {
-  mode: 'sync' | 'async',
+  mode: 'sync' | 'async', // 检测模式为同步或异步 推荐同步检测以避免异步带来的网速影响
 };
 
 // 使用

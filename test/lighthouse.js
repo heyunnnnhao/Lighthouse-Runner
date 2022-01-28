@@ -2,12 +2,12 @@
 const LighthouseRunner = require('../dist/out.js');
 const { makeJson } = require('../src/utils');
 
-const mockUrl = 'https://www.example.com';
+const mockUrl = 'https://www.baidu.com';
 
-const times = 2;
+const times = 3;
 
 const options = {
-  mode: 'async',
+  mode: 'sync',
 };
 
 new LighthouseRunner(mockUrl)

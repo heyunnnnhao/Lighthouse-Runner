@@ -2,8 +2,6 @@ const constants = require('./constants');
 const auditRefs = require('./auditRefs');
 
 const audits = [
-  'is-on-https',
-  'viewport',
   'metrics/first-contentful-paint',
   'metrics/largest-contentful-paint',
   'metrics/first-meaningful-paint',
@@ -11,6 +9,8 @@ const audits = [
   'metrics/total-blocking-time',
   'metrics/max-potential-fid',
   'metrics/cumulative-layout-shift',
+  'is-on-https',
+  'viewport',
   'errors-in-console',
   'server-response-time',
   'metrics/interactive',
