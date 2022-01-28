@@ -1,6 +1,6 @@
 {
   "name": "@jd/lighthouse-runner",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
   "main": "./lib/out.js",
@@ -24,10 +24,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "esbuild": "^0.13.5",
-    "lodash.get": "^4.4.2",
-    "lodash.isnumber": "^3.0.3",
-    "lodash.mergewith": "^4.6.2"
+    "esbuild": "^0.13.5"
   },
   "volta": {
     "node": "16.4.1",
@@ -35,6 +32,7 @@
     "npm": "7.19.1"
   },
   "dependencies": {
-    "lighthouse": "9.2.0"
+    "lighthouse": "9.2.0",
+    "lodash": "^4.17.21"
   }
 }

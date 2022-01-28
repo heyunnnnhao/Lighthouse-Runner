@@ -1,6 +1,4 @@
-const get = require('lodash.get');
-const mergeWith = require('lodash.mergewith');
-const isNumber = require('lodash.isnumber');
+const { get, mergeWith, isNumber } = require('lodash');
 const { getStandardDeviation, getAverage, formatTime } = require('./utils');
 
 // 计算得分
