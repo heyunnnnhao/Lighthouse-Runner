@@ -3,7 +3,7 @@
   "version": "1.2.3",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
-  "main": "./out.js",
+  "main": "./lib/out.js",
   "license": "ISC",
   "type": "commonjs",
   "keywords": [
@@ -12,31 +12,22 @@
     "testing"
   ],
   "engines": {
-    "node": ">= 12"
+    "node": ">= 14"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production node esbuild.js",
-    "lint": "eslint src --ext .ts --fix",
-    "lint:check": "eslint src --ext .ts",
     "test": "cross-env NODE_ENV=development node esbuild.js && cross-env NODE_ENV=development node test/lighthouse.js",
     "deploy": "npm run build && npm publish"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.178",
-    "@types/node": "^16.9.1",
-    "@typescript-eslint/eslint-plugin": "^4.31.0",
-    "@typescript-eslint/parser": "^4.31.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.13.5",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-import": "^2.24.2",
-    "source-map-support": "^0.5.20",
-    "typescript": "^4.4.3"
+    "lodash.get": "^4.4.2",
+    "lodash.isnumber": "^3.0.3",
+    "lodash.mergewith": "^4.6.2"
   },
   "volta": {
     "node": "16.4.1",
@@ -44,6 +35,6 @@
     "npm": "7.19.1"
   },
   "dependencies": {
-    "lighthouse": "^9.2.0"
+    "lighthouse": "9.2.0"
   }
 }

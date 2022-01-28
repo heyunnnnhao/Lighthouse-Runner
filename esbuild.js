@@ -4,7 +4,7 @@ esbuild.buildSync({
   target: ['node12', 'es2020'],
   entryPoints: ['src/index.js'],
   platform: 'node',
-  outfile: 'out.js',
+  outfile: 'lib/out.js',
   bundle: true,
   minify: true,
   banner: { js: '/* lighthouse-runner source code */' },

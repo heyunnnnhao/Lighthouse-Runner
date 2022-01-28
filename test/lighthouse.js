@@ -1,13 +1,13 @@
 /* lighthouse 测试 */
-const LighthouseRunner = require('../out.js');
+const LighthouseRunner = require('../lib/out.js');
 const { makeJson } = require('../src/utils');
 
-const mockUrl = 'https://www.baidu.com';
+const mockUrl = 'https://www.example.com';
 
 const times = 3;
 
 const options = {
-  mode: 'sync',
+  mode: 'async',
 };
 
 new LighthouseRunner(mockUrl)
