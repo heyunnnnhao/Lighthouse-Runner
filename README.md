@@ -47,7 +47,7 @@ new LighthouseRunner().errortest(); // 抛出 '错误抛出测试' 错误
     "omittedRun": 1 // 去尾个数
   },
   "description": "3 / 3 runs have passed with the score of 100", // 描述性文字
-  "warnings": [null, null, null], // 错误文字
+  "errors": null, // 错误文字
   "timesRun": 3, // 跑分次数
   "successfulRun": 3, // 跑分成功次数
   "lighthouseVersion": "9.2.0", // lighthouse 版本

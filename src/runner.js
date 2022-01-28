@@ -19,7 +19,7 @@ module.exports = async function runLH(url) {
   }
 
   try {
-    console.log(`running lighthouse at port: ${chrome.port}...`);
+    console.log(`正在运行 lighthouse 于端口: ${chrome.port} - ${new Date().toLocaleString('zh-CN')}`);
     rawResult = await lighthouse(url, { port: chrome.port }, config);
   } catch (error) {
     throw Error('运行 lighthouse 失败 ' + error);

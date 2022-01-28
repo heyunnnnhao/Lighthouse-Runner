@@ -1,6 +1,6 @@
 {
   "name": "@jd/lighthouse-runner",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
   "main": "./out.js",

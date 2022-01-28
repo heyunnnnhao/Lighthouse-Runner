@@ -28,8 +28,8 @@ function getScore(list) {
 function getOmitCount(length) {
   // 过滤promise失败后的列表若只剩一项，不忽略
   if (length === 1) return 0;
-  // 8不是必须，目的是跑分8次以上的话忽略最低的两次
-  return Math.ceil(length / 8);
+  // 6不是必须，目的是跑分6次以上的话忽略最低的两次
+  return Math.ceil(length / 6);
 }
 
 // 多次跑分中忽略最低的x次
@@ -97,7 +97,7 @@ function mergeResponses(validList, times) {
     omittedRun: omitCount,
   };
   // 描述性文字
-  result.description = `${validList.length} / ${times} runs ha${validList.length === 1 ? 's' : 've'} passed with the score of ${result.score.value}`;
+  result.description = `${validList.length} / ${times} 次跑分成功 - 最后得分为 ${result.score.value}`;
 
   return result;
 }
@@ -133,7 +133,7 @@ function formatLighthouseResponse(rawData) {
     //描述性文字
     description: null,
     // 错误信息
-    warnings: [],
+    errors: [],
     // 跑分次数
     timesRun: 1,
     // 跑分成功次数

@@ -37,15 +37,18 @@ class LighthouseRunner {
 
     return Promise.allSettled(arr)
       .then((res) => {
+        // 获取所有成功跑分
         const validList = res.filter((i) => i.status === 'fulfilled');
-
+        // 判断成功次数
         if (validList.length < 1) throw Error('跑分成功次数不足');
-
+        // 获取promise.allsettled返回结果中的有用数据
         const values = validList.map((i) => i.value);
-
+        // 合并多次跑分结果
         let result = mergeResponses(values, times);
-
-        result.warnings = res.map((i) => i.reason && i.reason);
+        // 从promise.allsettled中获取错误信息
+        result.errors = res.map((i) => i.reason && i.reason);
+        // 如果都没有问题就只返回一个null
+        if (result.errors.every((i) => !i)) result.errors = null;
 
         return result;
       })

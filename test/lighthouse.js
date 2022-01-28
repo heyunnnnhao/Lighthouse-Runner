@@ -1,5 +1,5 @@
 /* lighthouse 测试 */
-const LighthouseRunner = require('../dist/out.js');
+const LighthouseRunner = require('../out.js');
 const { makeJson } = require('../src/utils');
 
 const mockUrl = 'https://www.baidu.com';
