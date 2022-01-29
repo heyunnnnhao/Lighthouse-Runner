@@ -1,6 +1,6 @@
 {
   "name": "@jd/lighthouse-runner",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
   "main": "./lib/out.js",
@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "lighthouse": "9.2.0",
-    "lodash": "^4.17.21"
+    "lodash.get": "^4.4.2",
+    "lodash.isnumber": "^3.0.3",
+    "lodash.mergewith": "^4.6.2"
   }
 }
