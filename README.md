@@ -46,11 +46,12 @@ new LighthouseRunner().errortest(); // 抛出 '错误抛出测试' 错误
     "allScore": [100, 100, 100], // 全部得分
     "omittedRun": 1 // 去尾个数
   },
-  "description": "3 / 3 runs have passed with the score of 100", // 描述性文字
+  "description": "3 / 3 次跑分成功 - 忽略最低的 1 次跑分 - 最后得分为 100", // 描述性文字
   "errors": null, // 错误文字
   "timesRun": 3, // 跑分次数
   "successfulRun": 3, // 跑分成功次数
   "lighthouseVersion": "9.2.0", // lighthouse 版本
+  "lighthouseRunnerVersion": "1.2.7", // lighthouse-runner 版本
   "requestURL": "https://www.example.com/", // 请求 url
   "finalUrl": "https://www.example.com/", // 重定向后 url
   "fetchTime": "2022-01-20T03:45:38.396Z", // 请求时间

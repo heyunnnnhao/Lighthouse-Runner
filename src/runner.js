@@ -31,5 +31,9 @@ module.exports = async function runLH(url) {
     throw Error('关闭 chrome 失败 ' + error);
   }
 
-  return formatLighthouseResponse(rawResult);
+  try {
+    return formatLighthouseResponse(rawResult);
+  } catch (error) {
+    throw Error('runLH error' + error);
+  }
 };

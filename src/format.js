@@ -2,6 +2,7 @@ const get = require('lodash.get');
 const mergeWith = require('lodash.mergewith');
 const isNumber = require('lodash.isnumber');
 const { getStandardDeviation, getAverage, formatTime } = require('./utils');
+const lighthouseRunnerVersion = require('../package.json').version;
 
 // 计算得分
 function getScore(list) {
@@ -99,7 +100,7 @@ function mergeResponses(validList, times) {
     omittedRun: omitCount,
   };
   // 描述性文字
-  result.description = `${validList.length} / ${times} 次跑分成功 - 最后得分为 ${result.score.value}`;
+  result.description = `${validList.length} / ${times} 次跑分成功 - 忽略最低的 ${omitCount} 次跑分 - 最后得分为 ${result.score.value}`;
 
   return result;
 }
@@ -121,7 +122,13 @@ function formatLighthouseResponse(rawData) {
   // 过滤无权重（0也算有权重）的检查项目
   msr = Object.values(msr).filter((i) => i.weight != undefined);
 
-  const score = getScore(msr);
+  let score;
+
+  try {
+    score = getScore(msr);
+  } catch (error) {
+    throw Error('formatLighthouseResponse Error' + error);
+  }
   // Lighthouse 返回的总结果在此定义
   const result = {
     score: {
@@ -142,6 +149,8 @@ function formatLighthouseResponse(rawData) {
     successfulRun: 1,
     // Lighthouse 版本
     lighthouseVersion: lhr.lighthouseVersion,
+    // lighthouse-runnrt 版本
+    lighthouseRunnerVersion,
     // 请求url
     requestURL: lhr.requestedUrl,
     // 重定向后url
