@@ -4,7 +4,7 @@ const { makeJson } = require('../src/utils');
 
 const mockUrl = 'https://www.example.com';
 
-const times = 3;
+const times = 30;
 
 const options = {
   mode: 'async',

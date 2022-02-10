@@ -22,7 +22,7 @@ function getScore(list) {
 
   if (fakeScore > 100) return 100;
 
-  if (fakeScore < 1) throw Error('分数太低了!!!');
+  if (fakeScore < 1) throw Error('分数 < 1 !!!');
 
   return +fakeScore;
 }
@@ -127,7 +127,7 @@ function formatLighthouseResponse(rawData) {
   try {
     score = getScore(msr);
   } catch (error) {
-    throw Error('formatLighthouseResponse Error' + error);
+    throw Error('formatLighthouseResponse 错误 - ' + error);
   }
   // Lighthouse 返回的总结果在此定义
   const result = {

@@ -15,25 +15,25 @@ module.exports = async function runLH(url) {
   try {
     chrome = await chromeLauncher.launch(chromeOptions());
   } catch (error) {
-    throw Error('启动 chrome 失败 ' + error);
+    throw Error('启动 chrome 失败 - ' + error);
   }
 
   try {
     console.log(`正在运行 lighthouse 于端口: ${chrome.port} - ${new Date().toLocaleString('zh-CN')}`);
     rawResult = await lighthouse(url, { port: chrome.port }, config);
   } catch (error) {
-    throw Error(`运行 lighthouse@chromeoprt=${chrome.port} 失败` + error);
+    throw Error(`运行 lighthouse@chromeoprt=${chrome.port} 失败 - ` + error);
   }
 
   try {
     await chrome.kill();
   } catch (error) {
-    throw Error('关闭 chrome 失败 ' + error);
+    throw Error('关闭 chrome 失败 - ' + error);
   }
 
   try {
     return formatLighthouseResponse(rawResult);
   } catch (error) {
-    throw Error('runLH error' + error);
+    throw Error('结果格式化失败 - ' + error);
   }
 };

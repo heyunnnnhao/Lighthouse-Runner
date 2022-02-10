@@ -14,6 +14,7 @@ class LighthouseRunner {
       const forked = fork(childPath);
       forked.send(this.url);
       forked.on('message', async (res) => {
+        if (res?.isError) reject(res.error);
         resolve(res);
       });
     })
@@ -21,7 +22,7 @@ class LighthouseRunner {
         return res;
       })
       .catch((error) => {
-        throw Error('接受子进程数据失败' + error);
+        throw Error('接受子进程数据失败 - ' + error);
       })
       .finally(() => {});
   }
@@ -46,16 +47,14 @@ class LighthouseRunner {
         // 合并多次跑分结果
         let result = mergeResponses(values, times);
         // 从promise.allsettled中获取错误信息
-        result.errors = res.map((i) => i.reason && i.reason);
+        result.errors = res.map((i) => i.reason && i.reason.toString());
         // 如果都没有问题就只返回一个null
         if (result.errors.every((i) => !i)) result.errors = null;
 
         return result;
       })
       .catch((error) => {
-        console.log(error);
-
-        throw Error('多次运行 lighthouse 失败 ' + error);
+        throw Error('多次运行 lighthouse 失败 - ' + error);
       })
       .finally(() => {
         console.log(`结束测试 ${this.url}`);
