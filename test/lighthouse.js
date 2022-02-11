@@ -1,10 +1,10 @@
 /* lighthouse 测试 */
-const LighthouseRunner = require('../lib/out.js');
+const LighthouseRunner = require('../dist/index.js');
 const { makeJson } = require('../src/utils');
 
 const mockUrl = 'https://www.example.com';
 
-const times = 30;
+const times = 10;
 
 const options = {
   mode: 'async',

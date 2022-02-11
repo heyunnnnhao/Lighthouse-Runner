@@ -5,3 +5,4 @@ test/
 esbuild.js
 .eslintrc.json
 results/
+src/

@@ -1,9 +1,10 @@
 const runLH = require('./runner');
 const { mergeResponses } = require('./format');
 const { fork } = require('child_process');
-const process = require('process');
+const path = require('path');
 
-const childPath = process.env?.NODE_ENV === 'development' ? 'src/child' : './node_modules/@jd/lighthouse-runner/src/child';
+const childPath = path.join(__dirname, '/child.js');
+
 class LighthouseRunner {
   constructor(url = '') {
     this.url = url;
