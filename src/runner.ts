@@ -1,7 +1,7 @@
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
-const config = require('./configs/config-override');
-const { formatLighthouseResponse } = require('./format');
+import config from './configs/config-override';
+import { formatLighthouseResponse } from './format';
 
 function chromeOptions() {
   return {
@@ -9,7 +9,7 @@ function chromeOptions() {
   };
 }
 
-module.exports = async function runLH(url) {
+export default async function runLH(url) {
   let chrome, rawResult;
 
   try {
@@ -36,4 +36,4 @@ module.exports = async function runLH(url) {
   } catch (error) {
     throw Error('结果格式化失败 - ' + error);
   }
-};
+}

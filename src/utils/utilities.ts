@@ -1,6 +1,6 @@
-const fs = require('fs');
+import * as fs from 'fs';
 
-function makeJson(data, folderName, fileName) {
+export function makeJson(data, folderName, fileName) {
   try {
     const resultJson = JSON.stringify(data);
     if (!fs.existsSync(folderName)) {
@@ -12,8 +12,6 @@ function makeJson(data, folderName, fileName) {
   }
 }
 
-function formatTime(time) {
+export function formatTime(time) {
   return new Date(time).toLocaleString('zh-CN');
 }
-
-module.exports = { makeJson, formatTime };

@@ -1,5 +1,5 @@
-const constants = require('./constants');
-const auditRefs = require('./auditRefs');
+import constants from './constants';
+import auditRefs from './auditRefs';
 
 const audits = [
   'metrics/first-contentful-paint',
@@ -97,7 +97,7 @@ const audits = [
   'seo/manual/structured-data',
 ];
 
-const defaultConfig = {
+export default {
   settings: constants.defaultSettings,
   passes: constants.defaultPassConfig,
   audits,
@@ -118,5 +118,3 @@ const defaultConfig = {
     },
   },
 };
-
-module.exports = defaultConfig;

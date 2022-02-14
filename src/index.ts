@@ -1,20 +1,23 @@
-const runLH = require('./runner');
-const { mergeResponses } = require('./format');
-const { fork } = require('child_process');
-const path = require('path');
+import runLH from './runner';
+import { mergeResponses } from './format';
+import { fork } from 'child_process';
+import * as path from 'path';
+import { RunnerConfig, RunnerOption, RunnerResponse } from './interfaces';
 
 const childPath = path.join(__dirname, '/child.js');
 
-class LighthouseRunner {
+export default class LighthouseRunner {
   constructor(url = '') {
     this.url = url;
   }
 
-  async generateChildProcess() {
+  private url: string;
+
+  private async generateChildProcess() {
     return new Promise((resolve, reject) => {
       const forked = fork(childPath);
       forked.send(this.url);
-      forked.on('message', async (res) => {
+      forked.on('message', async (res: any) => {
         if (res?.isError) reject(res.error);
         resolve(res);
       });
@@ -28,7 +31,7 @@ class LighthouseRunner {
       .finally(() => {});
   }
 
-  async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
+  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
     console.log(`开始测试 ${this.url}`);
 
     let arr = [];
@@ -38,19 +41,19 @@ class LighthouseRunner {
     }
 
     return Promise.allSettled(arr)
-      .then((res) => {
+      .then((res): RunnerResponse => {
         // 获取所有成功跑分
         const validList = res.filter((i) => i.status === 'fulfilled');
         // 判断成功次数
         if (validList.length < 1) throw Error('跑分成功次数不足');
         // 获取promise.allsettled返回结果中的有用数据
-        const values = validList.map((i) => i.value);
+        const values = validList.map((i: any) => i.value);
         // 合并多次跑分结果
         let result = mergeResponses(values, times);
         // 从promise.allsettled中获取错误信息
-        result.errors = res.map((i) => i.reason && i.reason.toString());
+        result.errors = res.map((i: any) => i.reason && i.reason.toString());
         // 如果都没有问题就只返回一个null
-        if (result.errors.every((i) => !i)) result.errors = null;
+        if (result.errors.every((i: any) => !i)) result.errors = null;
 
         return result;
       })
@@ -62,16 +65,16 @@ class LighthouseRunner {
       });
   }
 
-  async test() {
+  public async test() {
     console.log('success');
   }
 
-  errorTest() {
+  public errorTest() {
     throw Error('错误抛出测试');
   }
 
   // 入口函数 处理配置options
-  async run(times = 1, options = {}) {
+  public async run(times = 1, options: RunnerOption) {
     const isGodMode = options?.mode === 'god';
 
     const isAsync = options?.mode === 'async';
@@ -82,4 +85,4 @@ class LighthouseRunner {
   }
 }
 
-module.exports = LighthouseRunner;
+export { RunnerConfig, RunnerOption, RunnerResponse };

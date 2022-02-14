@@ -1,18 +1,18 @@
 /* lighthouse 测试 */
-const LighthouseRunner = require('../dist/index.js');
-const { makeJson } = require('../src/utils');
+import LighthouseRunner, { RunnerConfig, RunnerOption, RunnerResponse } from '../dist/src/index';
+import { makeJson } from '../src/utils';
 
 const mockUrl = 'https://www.example.com';
 
-const times = 10;
+const times = 2;
 
-const options = {
+const options: RunnerOption = {
   mode: 'async',
 };
 
 new LighthouseRunner(mockUrl)
   .run(times, options)
-  .then((res) => {
+  .then((res: RunnerResponse) => {
     if (!res) return;
 
     console.log(res.description);

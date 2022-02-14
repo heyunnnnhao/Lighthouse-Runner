@@ -2,25 +2,25 @@
 
 [Jnpm](http://npm.m.jd.com/package/@jd/lighthouse-runner)  
 [Coding](http://coding.jd.com/heyunhao1/lighthouse-runner/)  
-[Lighthouse](https://github.com/GoogleChrome/lighthouse)  
+[Lighthouse](https://github.com/GoogleChrome/lighthouse)
 
 使用：
 
 ```typescript
-const LighthouseRunner = require("@jd/lighthouse-runner");
+import LighthouseRunner, { RunnerConfig, RunnerOption, RunnerResponse } from '../dist/src/index';
 
 const mockUrl = 'https://www.example.com/'; // 跑分url
 
 const times = 3; // 跑分次数
 
-const options = {
+const options: RunnerOption = {
   mode: 'sync' | 'async', // 检测模式为同步或异步 推荐同步检测以避免异步带来的网速影响
 };
 
 // 使用
 new LighthouseRunner(mockUrl)
   .run(times, options)
-  .then((res) => {
+  .then((res: RunnerResponse) => {
     console.log(res.description); // 打印测试结果概览
     return res; // 返回结果
   })
@@ -34,7 +34,9 @@ new LighthouseRunner().test(); // 打印 'success!!!'
 // 错误抛出测试
 new LighthouseRunner().errortest(); // 抛出 '错误抛出测试' 错误
 ```
+
 返回结果文档：
+
 ```json
 {
   "score": {
@@ -51,7 +53,7 @@ new LighthouseRunner().errortest(); // 抛出 '错误抛出测试' 错误
   "timesRun": 3, // 跑分次数
   "successfulRun": 3, // 跑分成功次数
   "lighthouseVersion": "9.2.0", // lighthouse 版本
-  "lighthouseRunnerVersion": "1.2.7", // lighthouse-runner 版本
+  "lighthouseRunnerVersion": "1.3.0", // lighthouse-runner 版本
   "requestURL": "https://www.example.com/", // 请求 url
   "finalUrl": "https://www.example.com/", // 重定向后 url
   "fetchTime": "2022-01-20T03:45:38.396Z", // 请求时间

@@ -1,3 +1,5 @@
+import { AuditRef } from '../interfaces/audits';
+
 // go/lh-audit-metric-mapping
 const fcpRelevantAudits = [
   'server-response-time',
@@ -34,7 +36,7 @@ const clsRelevantAudits = [
   'preload-fonts', // actually in BP, rather than perf
 ];
 
-const weightedAudits = [
+const weightedAudits: Array<AuditRef> = [
   { id: 'first-contentful-paint', weight: 10, group: 'metrics', acronym: 'FCP', relevantAudits: fcpRelevantAudits },
   { id: 'interactive', weight: 10, group: 'metrics', acronym: 'TTI' },
   { id: 'speed-index', weight: 10, group: 'metrics', acronym: 'SI' },
@@ -43,7 +45,7 @@ const weightedAudits = [
   { id: 'cumulative-layout-shift', weight: 15, group: 'metrics', acronym: 'CLS', relevantAudits: clsRelevantAudits },
 ];
 
-const unweightedAudits = [
+const unweightedAudits: Array<AuditRef> = [
   { id: 'max-potential-fid', weight: 0, group: 'diagnostics' },
   { id: 'first-meaningful-paint', weight: 0, acronym: 'FMP', group: 'diagnostics' },
   { id: 'render-blocking-resources', weight: 0, group: 'diagnostics' },
@@ -93,16 +95,6 @@ const unweightedAudits = [
   { id: 'metrics', weight: 0, group: 'diagnostics' },
 ];
 
-const auditRefs = weightedAudits.concat(unweightedAudits);
+const auditRefs: Array<AuditRef> = [...weightedAudits, ...unweightedAudits];
 
-function weightCheck(auditsList) {
-  const weightSum = auditsList.reduce((a, b) => {
-    return a + b.weight;
-  }, 0);
-
-  return weightSum === 100;
-}
-
-if (!weightCheck(auditRefs)) throw Error('总权重必须是 100!!!');
-
-module.exports = auditRefs;
+export default auditRefs;

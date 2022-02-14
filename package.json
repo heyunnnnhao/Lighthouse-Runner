@@ -1,9 +1,10 @@
 {
   "name": "@jd/lighthouse-runner",
-  "version": "1.2.10",
+  "version": "1.3.0",
   "description": "An opinionated, custom Lighthouse runner for performance testing",
   "author": "heyunhao1",
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "license": "ISC",
   "type": "commonjs",
   "keywords": [
@@ -18,8 +19,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "cross-env NODE_ENV=production node esbuild.js",
-    "test": "cross-env NODE_ENV=development node esbuild.js && cross-env NODE_ENV=development node test/lighthouse.js",
+    "build": "rm -rf ./dist && tsc && node esbuild.js",
+    "test": "npm run build && ts-node test/lighthouse.ts",
     "deploy": "npm run build && npm publish"
   },
   "devDependencies": {
@@ -27,9 +28,7 @@
     "esbuild": "^0.14.21"
   },
   "dependencies": {
-    "lighthouse": "9.2.0",
-    "lodash.get": "^4.4.2",
-    "lodash.isnumber": "^3.0.3",
-    "lodash.mergewith": "^4.6.2"
+    "lodash": "latest",
+    "lighthouse": "9.2.0"
   }
 }

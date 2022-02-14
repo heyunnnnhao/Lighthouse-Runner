@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020", "es2020.Promise", "dom"],
+    "module": "commonjs",
+    "target": "es2020",
+    "rootDir": ".",
+    "outDir": "./dist/",
+    "strict": false,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": true
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.js"],
+  "exclude": ["./test/**/*.ts"]
+}

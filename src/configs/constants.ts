@@ -182,7 +182,7 @@ const UIStrings = {
   diagnosticsGroupDescription: "More information about the performance of your application. These numbers don't [directly affect](https://web.dev/performance-scoring/) the Performance score.",
 };
 
-module.exports = {
+export default {
   throttling,
   screenEmulationMetrics,
   userAgents,

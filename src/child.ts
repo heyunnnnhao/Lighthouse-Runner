@@ -1,4 +1,4 @@
-const runLH = require('./runner');
+import runLH from './runner';
 
 process.on('message', (url) => {
   runLH(url)
