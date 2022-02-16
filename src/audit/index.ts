@@ -1,7 +1,4 @@
-import constants from './constants';
-import auditRefs from './auditRefs';
-
-const audits = [
+export const performanceAudits = [
   'metrics/first-contentful-paint',
   'metrics/largest-contentful-paint',
   'metrics/first-meaningful-paint',
@@ -97,24 +94,6 @@ const audits = [
   'seo/manual/structured-data',
 ];
 
-export default {
-  settings: constants.defaultSettings,
-  passes: constants.defaultPassConfig,
-  audits,
-  groups: {
-    metrics: {
-      title: constants.UIStrings.metricGroupTitle,
-    },
-    diagnostics: {
-      title: constants.UIStrings.diagnosticsGroupTitle,
-      description: constants.UIStrings.diagnosticsGroupDescription,
-    },
-  },
-  categories: {
-    performance: {
-      title: constants.UIStrings.performanceCategoryTitle,
-      supportedModes: ['navigation', 'timespan', 'snapshot'],
-      auditRefs,
-    },
-  },
-};
+export const complianceAuditsRaw = ['all-image', 'all-text'];
+
+export const complianceAudits = complianceAuditsRaw.map((audit) => 'src/audit/' + audit);

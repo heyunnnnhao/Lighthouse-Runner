@@ -1,6 +1,6 @@
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
-import config from './configs/config-override';
+import configGenerator from './configs/config-generator';
 import { formatLighthouseResponse } from './format';
 
 function chromeOptions() {
@@ -9,7 +9,7 @@ function chromeOptions() {
   };
 }
 
-export default async function runLH(url) {
+export default async function runLH(url, configs) {
   let chrome, rawResult;
 
   try {
@@ -20,9 +20,9 @@ export default async function runLH(url) {
 
   try {
     console.log(`正在运行 lighthouse 于端口: ${chrome.port} - ${new Date().toLocaleString('zh-CN')}`);
-    rawResult = await lighthouse(url, { port: chrome.port }, config);
+    rawResult = await lighthouse(url, { port: chrome.port }, configGenerator(configs));
   } catch (error) {
-    throw Error(`运行 lighthouse@chromeoprt=${chrome.port} 失败 - ` + error);
+    throw Error(`运行 lighthouse@${chrome.port} 失败 - ` + error);
   }
 
   try {
@@ -32,7 +32,7 @@ export default async function runLH(url) {
   }
 
   try {
-    return formatLighthouseResponse(rawResult);
+    return formatLighthouseResponse(rawResult, configs);
   } catch (error) {
     throw Error('结果格式化失败 - ' + error);
   }

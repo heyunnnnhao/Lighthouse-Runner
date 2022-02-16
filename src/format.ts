@@ -1,6 +1,7 @@
-import { get, mergeWith, isNumber } from 'lodash';
+import { get, mergeWith, isNumber, isEmpty } from 'lodash';
 import { getStandardDeviation, getAverage, formatTime } from './utils';
 import * as packagejson from '../package.json';
+
 // 计算得分
 function getScore(list) {
   let temp = 0;
@@ -13,15 +14,9 @@ function getScore(list) {
 
   let realScore = Math.ceil(temp);
 
-  let fakeScore = realScore;
+  if (realScore < 1) throw Error('分数 < 1 !!!');
 
-  // if (curveRatio) fakeScore *= curveRatio;
-
-  if (fakeScore > 100) return 100;
-
-  if (fakeScore < 1) throw Error('分数 < 1 !!!');
-
-  return +fakeScore;
+  return +realScore;
 }
 
 // 动态忽略个数
@@ -102,32 +97,72 @@ function mergeResponses(validList, times) {
   return result;
 }
 
-// 整理，重组lighthouse返回的原始数据
-function formatLighthouseResponse(rawData) {
+// 修正原始数据
+function chop(rawData, configs) {
   const lhr = get(rawData, 'lhr', {});
 
-  const auditRefs = get(lhr, 'categories.performance.auditRefs');
+  const allAudits = lhr.audits;
 
-  let msr = lhr.audits; // msr 为 "MenShen result"
+  let auditRefs: any = {};
 
-  // 为 检查项目 列表添加权重和group名
-  auditRefs.forEach((i) => {
-    msr[i.id].weight = i.weight;
-    msr[i.id].group = i.group;
+  const configCategories = Object.keys(configs);
+
+  configCategories.map((category) => {
+    auditRefs[category] = get(lhr, `categories.${category}.auditRefs`, []);
   });
 
-  // 过滤无权重（0也算有权重）的检查项目
-  msr = Object.values(msr).filter((i: any) => i.weight != undefined);
+  const metaData = {
+    // Lighthouse 版本
+    lighthouseVersion: lhr.lighthouseVersion,
+    // 请求url
+    requestURL: lhr.requestedUrl,
+    // 重定向后url
+    finalUrl: lhr.finalUrl,
+    // 请求时间
+    fetchTime: lhr.fetchTime,
+    // UA
+    userAgent: lhr.userAgent,
+    // 环境参数
+    environment: lhr.environment,
+    // 性能，网络节流参数
+    throttling: lhr.configSettings.throttling,
+    // 手机环境模拟参数
+    emulation: lhr.configSettings.screenEmulation,
+  };
 
-  let score;
+  return { allAudits, metaData, categories: configCategories, auditRefs };
+}
+
+// 整理，重组lighthouse返回的原始数据
+function formatLighthouseResponse(rawData, configs) {
+  const { allAudits, metaData, categories, auditRefs } = chop(rawData, configs);
+
+  // 为 检查项目 列表添加权重和group名
+  Object.values(auditRefs).forEach((i: any) => {
+    if (i.length > 0) {
+      i.forEach((audit) => {
+        allAudits[audit.id].weight = audit.weight;
+        allAudits[audit.id].group = audit.group;
+      });
+    }
+  });
+
+  let msr: any = [];
+
+  categories.forEach((category) => {
+    msr[category] = Object.values(allAudits).filter((audit: any) => {
+      return auditRefs[category].map((i: any) => i.id).indexOf(audit.id) !== -1;
+    });
+  });
+
+  let score: any;
 
   try {
-    score = getScore(msr);
+    score = Object.keys(configs).indexOf('performance') === -1 ? null : getScore(msr.performance);
   } catch (error) {
     throw Error('formatLighthouseResponse 错误 - ' + error);
   }
 
-  const { version } = packagejson;
   // Lighthouse 返回的总结果在此定义
   const result = {
     score: {
@@ -146,26 +181,12 @@ function formatLighthouseResponse(rawData) {
     timesRun: 1,
     // 跑分成功次数
     successfulRun: 1,
-    // Lighthouse 版本
-    lighthouseVersion: lhr.lighthouseVersion,
     // lighthouse-runnrt 版本
-    lighthouseRunnerVersion: version,
-    // 请求url
-    requestURL: lhr.requestedUrl,
-    // 重定向后url
-    finalUrl: lhr.finalUrl,
-    // 请求时间
-    fetchTime: lhr.fetchTime,
-    // UA
-    userAgent: lhr.userAgent,
-    // 环境参数
-    environment: lhr.environment,
-    // 性能，网络节流参数
-    throttling: lhr.configSettings.throttling,
-    // 手机环境模拟参数
-    emulation: lhr.configSettings.screenEmulation,
+    lighthouseRunnerVersion: packagejson.version,
+    // 元数据
+    ...metaData,
     // 各检查项目结果
-    msr,
+    msr: { ...msr },
   };
 
   return result;

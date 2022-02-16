@@ -20,7 +20,8 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc && node esbuild.js",
-    "test": "npm run build && ts-node test/lighthouse.ts",
+    "test": "rm -rf ./results && npm run build && ts-node test/lighthouse.ts",
+    "te": "ts-node test/lighthouse.ts",
     "deploy": "npm run build && npm publish"
   },
   "devDependencies": {
@@ -28,7 +29,8 @@
     "esbuild": "^0.14.21"
   },
   "dependencies": {
-    "lodash": "latest",
-    "lighthouse": "9.2.0"
+    "html-to-text": "^8.1.0",
+    "lighthouse": "9.2.0",
+    "lodash": "latest"
   }
 }

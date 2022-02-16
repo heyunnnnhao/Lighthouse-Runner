@@ -1,7 +1,7 @@
 import runLH from './runner';
 
-process.on('message', (url) => {
-  runLH(url)
+process.on('message', ({ url, configs }) => {
+  runLH(url, configs)
     .then((res) => {
       process.send(res);
     })

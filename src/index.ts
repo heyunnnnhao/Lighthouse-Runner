@@ -3,8 +3,7 @@ import { mergeResponses } from './format';
 import { fork } from 'child_process';
 import * as path from 'path';
 import { RunnerConfig, RunnerOption, RunnerResponse } from './interfaces';
-
-const childPath = path.join(__dirname, '/child.js');
+const childPath = path.join(__dirname, '/child');
 
 export default class LighthouseRunner {
   constructor(url = '') {
@@ -13,10 +12,10 @@ export default class LighthouseRunner {
 
   private url: string;
 
-  private async generateChildProcess() {
+  private async generateChildProcess(configs) {
     return new Promise((resolve, reject) => {
       const forked = fork(childPath);
-      forked.send(this.url);
+      forked.send({ url: this.url, configs });
       forked.on('message', async (res: any) => {
         if (res?.isError) reject(res.error);
         resolve(res);
@@ -31,17 +30,17 @@ export default class LighthouseRunner {
       .finally(() => {});
   }
 
-  private async runLighthouse(times, { isAsync = false, isGodMode = false, curveRatio = 1 }) {
+  private async runLighthouse(times, options, configs) {
     console.log(`开始测试 ${this.url}`);
 
     let arr = [];
 
     for (let i = 0; i < times; i++) {
-      arr.push(isAsync ? this.generateChildProcess() : await runLH(this.url));
+      arr.push(options.mode === 'async' ? this.generateChildProcess(configs) : await runLH(this.url, configs));
     }
 
     return Promise.allSettled(arr)
-      .then((res): RunnerResponse => {
+      .then((res): any => {
         // 获取所有成功跑分
         const validList = res.filter((i) => i.status === 'fulfilled');
         // 判断成功次数
@@ -74,14 +73,8 @@ export default class LighthouseRunner {
   }
 
   // 入口函数 处理配置options
-  public async run(times = 1, options: RunnerOption) {
-    const isGodMode = options?.mode === 'god';
-
-    const isAsync = options?.mode === 'async';
-
-    const curveRatio = options?.curve;
-
-    return await this.runLighthouse(times, { isAsync, isGodMode, curveRatio });
+  public async run(times = 1, options: RunnerOption, configs: RunnerConfig) {
+    return await this.runLighthouse(times, options, configs);
   }
 }
 
