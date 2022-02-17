@@ -1,7 +1,5 @@
 ## Lighthouse 性能跑分
 
-[Jnpm](http://npm.m.jd.com/package/@jd/lighthouse-runner)  
-[Coding](http://coding.jd.com/heyunhao1/lighthouse-runner/)  
 [Lighthouse](https://github.com/GoogleChrome/lighthouse)
 
 使用：
@@ -17,9 +15,15 @@ const options: RunnerOption = {
   mode: 'sync' | 'async', // 检测模式为同步或异步 推荐同步检测以避免异步带来的网速影响
 };
 
+const configs: RunnerConfig = {
+  performance: {},
+  compliance: {},
+  security: {},
+};
+
 // 使用
 new LighthouseRunner(mockUrl)
-  .run(times, options)
+  .run(times, options, configs)
   .then((res: RunnerResponse) => {
     console.log(res.description); // 打印测试结果概览
     return res; // 返回结果
