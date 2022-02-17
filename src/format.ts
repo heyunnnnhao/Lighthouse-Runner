@@ -1,7 +1,7 @@
 import { get, mergeWith, isNumber, isEmpty } from 'lodash';
 import { getStandardDeviation, getAverage, formatTime } from './utils';
 import * as packagejson from '../package.json';
-
+import { RunnerResponse, RunnerConfig } from './interfaces';
 // 计算得分
 function getScore(list) {
   let temp = 0;
@@ -98,7 +98,7 @@ function mergeResponses(validList, times) {
 }
 
 // 修正原始数据
-function chop(rawData, configs) {
+function chop(rawData, configs: RunnerConfig) {
   const lhr = get(rawData, 'lhr', {});
 
   const allAudits = lhr.audits;
@@ -134,7 +134,7 @@ function chop(rawData, configs) {
 }
 
 // 整理，重组lighthouse返回的原始数据
-function formatLighthouseResponse(rawData, configs) {
+function formatLighthouseResponse(rawData, configs: RunnerConfig) {
   const { allAudits, metaData, categories, auditRefs } = chop(rawData, configs);
 
   // 为 检查项目 列表添加权重和group名

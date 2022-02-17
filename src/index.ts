@@ -12,7 +12,7 @@ export default class LighthouseRunner {
 
   private url: string;
 
-  private async generateChildProcess(configs) {
+  private async generateChildProcess(configs: RunnerConfig): Promise<any> {
     return new Promise((resolve, reject) => {
       const forked = fork(childPath);
       forked.send({ url: this.url, configs });

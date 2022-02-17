@@ -2,6 +2,7 @@ const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 import configGenerator from './configs/config-generator';
 import { formatLighthouseResponse } from './format';
+import { RunnerConfig, RunnerResponse } from './interfaces';
 
 function chromeOptions() {
   return {
@@ -9,7 +10,7 @@ function chromeOptions() {
   };
 }
 
-export default async function runLH(url, configs) {
+export default async function runLH(url: string, configs: RunnerConfig) {
   let chrome, rawResult;
 
   try {

@@ -92,6 +92,6 @@ export const performanceAuditRefs: Array<AuditRef> = [
   { id: 'metrics', weight: 0 },
 ];
 
-export const complianceAuditRefs = complianceAuditsRaw.map((audit) => {
+export const complianceAuditRefs: Array<AuditRef> = complianceAuditsRaw.map((audit) => {
   return { id: audit, weight: 0 };
 });
