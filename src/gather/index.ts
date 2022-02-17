@@ -28,6 +28,6 @@ export const performanceGatherers = [
   'source-maps',
 ];
 
-export const complianceGatherersRaw = [];
+export const complianceGatherersRaw = ['all-text'];
 
 export const complianceGatherers = complianceGatherersRaw.map((gather) => 'src/gather/' + gather);

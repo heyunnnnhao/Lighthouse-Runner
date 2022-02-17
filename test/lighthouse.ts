@@ -1,5 +1,5 @@
 /* lighthouse 测试 */
-import LighthouseRunner, { RunnerConfig, RunnerOption, RunnerResponse } from '../src/index';
+import LighthouseRunner, { RunnerConfig, RunnerOption, RunnerResponse } from '../dist/src/index';
 import * as fs from 'fs';
 
 export function makeJson(data, folderName, fileName) {
@@ -14,7 +14,7 @@ export function makeJson(data, folderName, fileName) {
   }
 }
 
-const mockUrl = 'https://h5.m.jd.com/babelDiy/Zeus/3ZQDYkKkiqEPfdELdsVrKrEZzixx/index.html';
+const mockUrl = 'https://h5.m.jd.com/babelDiy/Zeus/2iJ33Thj52Mfb4fmgytVSBhkLn2i/index.html';
 
 const times = 1;
 
@@ -22,7 +22,7 @@ const options: RunnerOption = {
   mode: 'async',
 };
 
-const configs = {
+const configs: RunnerConfig = {
   performance: {},
   compliance: {},
   security: {},

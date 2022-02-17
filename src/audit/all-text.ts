@@ -1,5 +1,4 @@
 const { Audit: audit } = require('lighthouse');
-const { convert } = require('html-to-text');
 
 class AllTextAudit extends audit {
   static get meta() {
@@ -8,19 +7,26 @@ class AllTextAudit extends audit {
       title: '所有文本',
       failureTitle: '获取文本失败',
       description: '获取网站上所有文本',
-      requiredArtifacts: ['MainDocumentContent'],
+      requiredArtifacts: ['AllText'],
     };
   }
 
   static audit(artifacts) {
-    const { MainDocumentContent } = artifacts;
-    const text = convert(MainDocumentContent, {
-      wordwrap: 130,
-    });
-    console.log(text);
+    const { AllText } = artifacts;
+
     return {
-      score: null,
-      details: MainDocumentContent,
+      score: 1,
+      numericValue: AllText.length,
+      scoreDisplayMode: 'binary',
+      details: {
+        type: 'table',
+        headings: [{ key: 'text', itemType: 'text', text: 'TEXT' }],
+        items: AllText.map((i) => {
+          return {
+            text: i,
+          };
+        }),
+      },
     };
   }
 }
