@@ -14,7 +14,7 @@ export function makeJson(data, folderName, fileName) {
   }
 }
 
-const mockUrl = 'https://h5.m.jd.com/babelDiy/Zeus/2iJ33Thj52Mfb4fmgytVSBhkLn2i/index.html';
+const mockUrl = 'https://www.baidu.com/';
 
 const times = 1;
 

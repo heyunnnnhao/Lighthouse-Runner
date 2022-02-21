@@ -2,7 +2,7 @@ const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 import configGenerator from './configs/config-generator';
 import { formatLighthouseResponse } from './format';
-import { RunnerConfig, RunnerResponse } from './interfaces';
+import { RunnerConfig } from './interfaces';
 
 function chromeOptions() {
   return {
@@ -15,21 +15,11 @@ export default async function runLH(url: string, configs: RunnerConfig) {
 
   try {
     chrome = await chromeLauncher.launch(chromeOptions());
-  } catch (error) {
-    throw Error('启动 chrome 失败 - ' + error);
-  }
-
-  try {
     console.log(`正在运行 lighthouse 于端口: ${chrome.port} - ${new Date().toLocaleString('zh-CN')}`);
     rawResult = await lighthouse(url, { port: chrome.port }, configGenerator(configs));
-  } catch (error) {
-    throw Error(`运行 lighthouse@${chrome.port} 失败 - ` + error);
-  }
-
-  try {
     await chrome.kill();
   } catch (error) {
-    throw Error('关闭 chrome 失败 - ' + error);
+    throw Error(`运行 lighthouse@${chrome.port} 失败 - ` + error);
   }
 
   try {
