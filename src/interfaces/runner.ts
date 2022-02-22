@@ -1,14 +1,4 @@
 import AuditDetails from './audits';
-
-interface Score {
-  value: number;
-  valueBeforeOmit: number;
-  standardDeviation: number;
-  standardDeviationBeforeOmit: number;
-  allScore: Array<number>;
-  omittedRun: number;
-}
-
 interface ScoreDisplayModes {
   NUMERIC: 'numeric';
   BINARY: 'binary';
@@ -41,7 +31,14 @@ interface MSRItem {
 }
 
 export interface RunnerResponse {
-  score: Score | null;
+  score: {
+    value: number;
+    valueBeforeOmit: number;
+    standardDeviation: number;
+    standardDeviationBeforeOmit: number;
+    allScore: Array<number>;
+    omittedRun: number;
+  } | null;
   description: string;
   errors: Array<string | null> | null;
   timesRun: number;
